@@ -1,0 +1,74 @@
+name: Reusable Test Workflow
+
+on:
+    workflow_call:
+        inputs:
+            branch:
+                required: true
+                type: string
+            run-test:
+                required: true
+                type: boolean
+        secrets:
+            NPM_TOKEN:
+                required: true
+            FA_TOKEN:
+                required: true
+            GITHUB_TOKEN:
+                required: true
+
+jobs:
+    test:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [12.16.3]
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            # more specific than v2
+            - uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+              with:
+                  ref: ${{ inputs.branch }}
+            # If package-lock.json does not change, the node modules are used from the cache to improve the speed
+
+            - name: Cache node modules
+              # more specific than v2
+              uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
+            - name: Node ${{ matrix.node-version }}
+              # more specific than v2-beta
+              uses: actions/setup-node@27082cecf3ff7a1742dbd5e12605f0cb59dce2d9
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: npm set config for FA
+              run: npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FA_TOKEN }}"
+
+            - name: npm set config for NPM
+              run: npm config set '//registry.npmjs.org/:_authToken' "${{ secrets.NPM_TOKEN }}"
+
+            - name: npm install
+              run: npm ci
+
+            - name: lint
+              id: lint
+              run: npm run lint
+
+            - name: prettier
+              id: prettier
+              run: npm run checkPrettier
+
+            - name: tests
+              if: ${{ inputs.run-test }}
+              id: test
+              run: npm run test:ci
+
+            - name: npm run build
+              run: npm run build:prod
