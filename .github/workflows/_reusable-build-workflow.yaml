@@ -71,9 +71,6 @@ jobs:
               uses: tyankatsu0105/read-package-version-actions@b660c21be1531c1ad23c0bbfb72dfe64c9af05a6
               id: package-version
 
-            - name: npm run build
-              run: npm run build:prod
-
             # more specific than v1
             - uses: papeloto/action-zip@5f1c4aa587ea41db1110df6a99981dbe19cee310
               with:
