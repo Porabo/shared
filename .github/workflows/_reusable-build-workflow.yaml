@@ -75,7 +75,7 @@ jobs:
               run: |
                 # adding the last commit as comment in index.html
                 printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
-                printf '<!-- Build Date: %s -->\n' "$(TZ='Germany/Berlin' date)" >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
 
             # more specific than v1
             - uses: papeloto/action-zip@5f1c4aa587ea41db1110df6a99981dbe19cee310
