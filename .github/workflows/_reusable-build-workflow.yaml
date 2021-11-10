@@ -71,10 +71,11 @@ jobs:
               uses: tyankatsu0105/read-package-version-actions@b660c21be1531c1ad23c0bbfb72dfe64c9af05a6
               id: package-version
               
-            - name: git
+            - name: Add version and build info to index.html
               run: |
                 # adding the last commit as comment in index.html
-                printf '<!-- App Version :%s Build Date:%s -->\n' "${{ steps.package-version.outputs.version }}" "$(TZ='Germany/Berlin' date)"  >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- Build Date: %s -->\n' "$(TZ='Germany/Berlin' date)" >> dist/${{ inputs.output-name }}/index.html
 
             # more specific than v1
             - uses: papeloto/action-zip@5f1c4aa587ea41db1110df6a99981dbe19cee310
