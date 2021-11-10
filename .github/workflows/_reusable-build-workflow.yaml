@@ -74,7 +74,7 @@ jobs:
             - name: git
               run: |
                 # adding the last commit as comment in index.html
-                git rev-parse HEAD | awk '{print "<!-- Last commit hash: "$1" -->"}' >> dist/index.html
+                '<!-- App Version :%s Build Date:%s -->\n' "$(git rev-parse HEAD)" "$(TZ='Germany/Berlin' date)"  >> dist/index.html
 
             # more specific than v1
             - uses: papeloto/action-zip@5f1c4aa587ea41db1110df6a99981dbe19cee310
