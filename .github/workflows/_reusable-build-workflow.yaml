@@ -14,7 +14,7 @@ on:
             is-prerelease:
                 required: true
                 type: boolean
-        workflow_secrets:
+        secrets:
             NPM_TOKEN:
                 required: true
             FA_TOKEN:
@@ -52,10 +52,10 @@ jobs:
                 node-version: ${{ matrix.node-version }}
 
             - name: npm set config for FA
-              run: npm config set '//npm.fontawesome.com/:_authToken' "${{ workflow_secrets.FA_TOKEN }}"
+              run: npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FA_TOKEN }}"
 
             - name: npm set config for NPM
-              run: npm config set '//registry.npmjs.org/:_authToken' "${{ workflow_secrets.NPM_TOKEN }}"
+              run: npm config set '//registry.npmjs.org/:_authToken' "${{ secrets.NPM_TOKEN }}"
 
             - name: npm install
               run: npm ci
@@ -88,7 +88,7 @@ jobs:
               # more specific than v1
               uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
               env:
-                  GH_TOKEN: ${{ workflow_secrets.GH_TOKEN }}
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
               with:
                   tag_name: ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
                   release_name: Release ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
@@ -100,7 +100,7 @@ jobs:
               # more specific than v1
               uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
               env:
-                  GH_TOKEN: ${{ workflow_secrets.GH_TOKEN }}
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip

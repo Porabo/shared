@@ -9,7 +9,7 @@ on:
             run-test:
                 required: true
                 type: boolean
-        workflow_secrets:
+        secrets:
             NPM_TOKEN:
                 required: true
             FA_TOKEN:
@@ -49,10 +49,10 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - name: npm set config for FA
-              run: npm config set '//npm.fontawesome.com/:_authToken' "${{ workflow_secrets.FA_TOKEN }}"
+              run: npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FA_TOKEN }}"
 
             - name: npm set config for NPM
-              run: npm config set '//registry.npmjs.org/:_authToken' "${{ workflow_secrets.NPM_TOKEN }}"
+              run: npm config set '//registry.npmjs.org/:_authToken' "${{ secrets.NPM_TOKEN }}"
 
             - name: npm install
               run: npm ci
