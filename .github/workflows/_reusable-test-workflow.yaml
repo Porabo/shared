@@ -14,8 +14,6 @@ on:
                 required: true
             FA_TOKEN:
                 required: true
-            GH_TOKEN:
-                required: true
 
 jobs:
     test:
