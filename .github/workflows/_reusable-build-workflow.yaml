@@ -70,7 +70,7 @@ jobs:
               # more specific than v1
               uses: tyankatsu0105/read-package-version-actions@b660c21be1531c1ad23c0bbfb72dfe64c9af05a6
               id: package-version
-              
+
             - name: Add version and build info to index.html
               run: |
                 # adding the last commit as comment in index.html
@@ -88,7 +88,7 @@ jobs:
               # more specific than v1
               uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
               env:
-                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
               with:
                   tag_name: ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
                   release_name: Release ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
@@ -100,7 +100,7 @@ jobs:
               # more specific than v1
               uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
               env:
-                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
