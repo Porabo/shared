@@ -76,7 +76,7 @@ jobs:
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
 
             # more specific than v1
-            - uses: papeloto/action-zip@5f1c4aa587ea41db1110df6a99981dbe19cee310
+            - uses: vimtor/action-zip@ea2e8ccb48a9a1f48f5b16bf97cc5228cccda84a
               with:
                   files: dist/${{ inputs.output-name }}/
                   dest: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
