@@ -25,7 +25,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [12.16.3]
+                node-version: [16.18.1]
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             # more specific than v2
