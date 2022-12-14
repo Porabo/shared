@@ -28,15 +28,14 @@ jobs:
                 node-version: [16.18.1]
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            # more specific than v2
-            - uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+            # more specific than v3.2
+            - uses: actions/checkout@3.2
               with:
                 ref: ${{ inputs.branch }}
             # If package-lock.json does not change, the node modules are used from the cache to improve the speed
 
             - name: Cache node modules
-              # more specific than v2
-              uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+              uses: actions/cache@3.0.11
               with:
                 path: ~/.npm
                 key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -44,8 +43,7 @@ jobs:
                   ${{ runner.os }}-node-
 
             - name: Node ${{ matrix.node-version }}
-              # more specific than v2-beta
-              uses: actions/setup-node@27082cecf3ff7a1742dbd5e12605f0cb59dce2d9
+              uses: actions/setup-node@3.5.1
               with:
                 node-version: ${{ matrix.node-version }}
 
