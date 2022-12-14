@@ -28,7 +28,6 @@ jobs:
                 node-version: [16.18.1]
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            # more specific than v3.2
             - uses: actions/checkout@3.2
               with:
                 ref: ${{ inputs.branch }}
