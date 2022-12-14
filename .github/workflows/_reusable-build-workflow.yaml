@@ -28,7 +28,7 @@ jobs:
                 node-version: [16.18.1]
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v3.2
+            - uses: actions/checkout@v2.6.0
               with:
                 ref: ${{ inputs.branch }}
             # If package-lock.json does not change, the node modules are used from the cache to improve the speed
