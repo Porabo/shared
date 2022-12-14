@@ -25,8 +25,7 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            # more specific than v2
-            - uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+            - uses: actions/checkout@3.2
               with:
                   ref: ${{ inputs.branch }}
             # If package-lock.json does not change, the node modules are used from the cache to improve the speed
@@ -41,8 +40,7 @@ jobs:
                       ${{ runner.os }}-node-
 
             - name: Node ${{ matrix.node-version }}
-              # more specific than v2-beta
-              uses: actions/setup-node@27082cecf3ff7a1742dbd5e12605f0cb59dce2d9
+              uses: actions/setup-node@3.5.1
               with:
                   node-version: ${{ matrix.node-version }}
 
