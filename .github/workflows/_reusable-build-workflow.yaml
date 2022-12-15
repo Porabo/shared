@@ -62,7 +62,7 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              uses: culshaw/read-package-node-version-actions@v1
+              uses: gagle/package-version@v1
               id: package-version
 
             - name: Add version and build info to index.html
