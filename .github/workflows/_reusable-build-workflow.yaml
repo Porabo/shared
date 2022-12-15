@@ -87,6 +87,7 @@ jobs:
                   name: Release ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
                   draft: false
                   prerelease: ${{ inputs.is-prerelease }}
+                  generateReleaseNotes: true
 
             - name: Upload Release Asset
               id: upload-release-asset
