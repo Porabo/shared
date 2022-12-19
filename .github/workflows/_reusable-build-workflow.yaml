@@ -62,8 +62,11 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              uses: Porabo/read-package-version-actions@v1.0.0
+              uses: Porabo/read-package-version-actions@v1.0.1
               id: package-version
+              
+            - name: Print extracted version
+              run: echo "New version ${{ steps.package-version.outputs.version }}"
 
             - name: Add version and build info to index.html
               run: |
