@@ -79,7 +79,7 @@ jobs:
             - name: Echo versions
               run: |
                   echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
-                  echo "Published version: ${{ steps.cpv.outputs.published-version
+                  echo "Published version: ${{ steps.cpv.outputs.published-version }}"
             
             # more specific than v1
             - uses: vimtor/action-zip@ea2e8ccb48a9a1f48f5b16bf97cc5228cccda84a
