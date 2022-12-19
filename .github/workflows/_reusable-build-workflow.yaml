@@ -74,8 +74,7 @@ jobs:
                 printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.current-version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
             
-            # more specific than v1
-            - uses: vimtor/action-zip@ea2e8ccb48a9a1f48f5b16bf97cc5228cccda84a
+            - uses: vimtor/action-zip@v1.1
               with:
                   files: dist/${{ inputs.output-name }}/
                   dest: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
@@ -95,21 +94,19 @@ jobs:
             - name: Upload Release Asset
               id: upload-release-asset
               # more specific than v1
-              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v1
               with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
-                  asset_name: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
-                  asset_content_type: application/zip
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  # upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  # asset_path: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
+                  name: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
+                  # asset_content_type: application/zip
 
             - name: cleanup zip file
               run: rm -f ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
 
             - name: create commit
-              # more specific than v4
-              uses: stefanzweifel/git-auto-commit-action@abd87b7d94702070bef78dc1d56b6928b8fa9ecc
+              uses: stefanzweifel/git-auto-commit-action@v4.16.0
               with:
                   commit_message: ${{ steps.package-version.outputs.current-version }}
                   branch: ${{ inputs.branch }}
