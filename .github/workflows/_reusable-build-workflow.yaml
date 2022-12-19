@@ -62,16 +62,16 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              uses: Porabo/read-package-version-actions@v1.0.1
+              uses: martinbeentjes/npm-get-version-action@v1.2.3
               id: package-version
               
             - name: Print extracted version
-              run: echo "New version ${{ steps.package-version.outputs.version }}"
+              run: echo "New version ${{ steps.package-version.outputs.current-version }}"
 
             - name: Add version and build info to index.html
               run: |
                 # adding the last commit as comment in index.html
-                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.current-version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
             
             # more specific than v1
@@ -85,9 +85,9 @@ jobs:
               # more specific than v1
               uses: ncipollo/release-action@v1.12.0
               with:
-                  tag: ${{ steps.package-version.outputs.version }}-${{ inputs.branch }}
+                  tag: ${{ steps.package-version.outputs.current-version }}-${{ inputs.branch }}
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  name: Release ${{ steps.package-version.outputs.version }}-${{ inputs.branch }}
+                  name: Release ${{ steps.package-version.outputs.current-version }}-${{ inputs.branch }}
                   draft: false
                   prerelease: ${{ inputs.is-prerelease }}
                   generateReleaseNotes: true
@@ -111,5 +111,5 @@ jobs:
               # more specific than v4
               uses: stefanzweifel/git-auto-commit-action@abd87b7d94702070bef78dc1d56b6928b8fa9ecc
               with:
-                  commit_message: ${{ steps.package-version.outputs.version }}
+                  commit_message: ${{ steps.package-version.outputs.current-version }}
                   branch: ${{ inputs.branch }}
