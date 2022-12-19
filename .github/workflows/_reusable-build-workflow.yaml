@@ -62,13 +62,13 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              uses: jozsefsallai/package-version@v1.0.4
+              uses: Porabo/read-package-version-actions@v1.0.0
               id: package-version
 
             - name: Add version and build info to index.html
               run: |
                 # adding the last commit as comment in index.html
-                printf '<!-- App Version: %s-%s -->\n' "${{ env.PACKAGE_VERSION }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
             
             # more specific than v1
@@ -82,9 +82,9 @@ jobs:
               # more specific than v1
               uses: ncipollo/release-action@v1.12.0
               with:
-                  tag: ${{ env.PACKAGE_VERSION }}-${{ inputs.branch }}
+                  tag: ${{ steps.package-version.outputs.version }}-${{ inputs.branch }}
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  name: Release ${{ env.PACKAGE_VERSION }}-${{ inputs.branch }}
+                  name: Release ${{ steps.package-version.outputs.version }}-${{ inputs.branch }}
                   draft: false
                   prerelease: ${{ inputs.is-prerelease }}
                   generateReleaseNotes: true
@@ -108,5 +108,5 @@ jobs:
               # more specific than v4
               uses: stefanzweifel/git-auto-commit-action@abd87b7d94702070bef78dc1d56b6928b8fa9ecc
               with:
-                  commit_message: ${{ env.PACKAGE_VERSION }}
+                  commit_message: ${{ steps.package-version.outputs.version }}
                   branch: ${{ inputs.branch }}
