@@ -62,7 +62,7 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              uses: nyaa8/package-version@v1
+              uses: jozsefsallai/package-version@v1.0.4
               id: package-version
 
             - name: Add version and build info to index.html
@@ -70,17 +70,6 @@ jobs:
                 # adding the last commit as comment in index.html
                 printf '<!-- App Version: %s-%s -->\n' "${{ env.PACKAGE_VERSION }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
-
-            
-            - name: Check package version
-              id: cpv
-              uses: PostHog/check-package-version@v2
-            # test
-            - name: Echo versions
-              run: |
-                  echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
-                  echo "Published version: ${{ steps.cpv.outputs.published-version }}"
-                  echo "Version from nyaa8: ${{ env.PACKAGE_VERSION }}"
             
             # more specific than v1
             - uses: vimtor/action-zip@ea2e8ccb48a9a1f48f5b16bf97cc5228cccda84a
