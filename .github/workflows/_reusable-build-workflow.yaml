@@ -62,13 +62,13 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              uses: gagle/package-version@v1
+              uses: nyaa8/package-version@v1
               id: package-version
 
             - name: Add version and build info to index.html
               run: |
                 # adding the last commit as comment in index.html
-                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- App Version: %s-%s -->\n' "${{ env.PACKAGE_VERSION }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
 
             
@@ -80,6 +80,7 @@ jobs:
               run: |
                   echo "Committed version: ${{ steps.cpv.outputs.committed-version }}"
                   echo "Published version: ${{ steps.cpv.outputs.published-version }}"
+                  echo "Version from nyaa8: ${{ env.PACKAGE_VERSION }}"
             
             # more specific than v1
             - uses: vimtor/action-zip@ea2e8ccb48a9a1f48f5b16bf97cc5228cccda84a
@@ -92,9 +93,9 @@ jobs:
               # more specific than v1
               uses: ncipollo/release-action@v1.12.0
               with:
-                  tag: ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
+                  tag: ${{ env.PACKAGE_VERSION }}-${{ inputs.branch }}
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  name: Release ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
+                  name: Release ${{ env.PACKAGE_VERSION }}-${{ inputs.branch }}
                   draft: false
                   prerelease: ${{ inputs.is-prerelease }}
                   generateReleaseNotes: true
@@ -118,5 +119,5 @@ jobs:
               # more specific than v4
               uses: stefanzweifel/git-auto-commit-action@abd87b7d94702070bef78dc1d56b6928b8fa9ecc
               with:
-                  commit_message: ${{steps.package-version.outputs.version}}
+                  commit_message: ${{ env.PACKAGE_VERSION }}
                   branch: ${{ inputs.branch }}
