@@ -99,6 +99,7 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   # upload_url: ${{ steps.create_release.outputs.upload_url }}
                   # asset_path: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
+                  files: "./dist/*"
                   name: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
                   tag_name: ${{ steps.package-version.outputs.current-version }}-${{ inputs.branch }}
                   # asset_content_type: application/zip
