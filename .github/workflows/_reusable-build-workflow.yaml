@@ -25,18 +25,16 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [12.16.3]
+                node-version: [16.18.1]
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            # more specific than v2
-            - uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+            - uses: actions/checkout@v3.2.0
               with:
                 ref: ${{ inputs.branch }}
             # If package-lock.json does not change, the node modules are used from the cache to improve the speed
 
             - name: Cache node modules
-              # more specific than v2
-              uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+              uses: actions/cache@v3.0.11
               with:
                 path: ~/.npm
                 key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -44,8 +42,7 @@ jobs:
                   ${{ runner.os }}-node-
 
             - name: Node ${{ matrix.node-version }}
-              # more specific than v2-beta
-              uses: actions/setup-node@27082cecf3ff7a1742dbd5e12605f0cb59dce2d9
+              uses: actions/setup-node@v3.5.1
               with:
                 node-version: ${{ matrix.node-version }}
 
@@ -65,18 +62,19 @@ jobs:
               run: npm version patch --no-git-tag-version
 
             - name: Read package.json version
-              # more specific than v1
-              uses: tyankatsu0105/read-package-version-actions@b660c21be1531c1ad23c0bbfb72dfe64c9af05a6
+              uses: martinbeentjes/npm-get-version-action@v1.2.3
               id: package-version
+              
+            - name: Print extracted version
+              run: echo "New version ${{ steps.package-version.outputs.current-version }}"
 
             - name: Add version and build info to index.html
               run: |
                 # adding the last commit as comment in index.html
-                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
+                printf '<!-- App Version: %s-%s -->\n' "${{ steps.package-version.outputs.current-version }}" "${{ inputs.branch }}" >> dist/${{ inputs.output-name }}/index.html
                 printf '<!-- Build Date: %s -->\n' "$(TZ='Europe/Zurich' date)" >> dist/${{ inputs.output-name }}/index.html
-
-            # more specific than v1
-            - uses: papeloto/action-zip@5f1c4aa587ea41db1110df6a99981dbe19cee310
+            
+            - uses: vimtor/action-zip@v1.1
               with:
                   files: dist/${{ inputs.output-name }}/
                   dest: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
@@ -84,33 +82,30 @@ jobs:
             - name: Create Release
               id: create_release
               # more specific than v1
-              uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: ncipollo/release-action@v1.12.0
               with:
-                  tag_name: ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
-                  release_name: Release ${{steps.package-version.outputs.version}}-${{ inputs.branch }}
+                  tag: ${{ steps.package-version.outputs.current-version }}-${{ inputs.branch }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  name: Release ${{ steps.package-version.outputs.current-version }}-${{ inputs.branch }}
                   draft: false
                   prerelease: ${{ inputs.is-prerelease }}
+                  generateReleaseNotes: true
 
             - name: Upload Release Asset
               id: upload-release-asset
               # more specific than v1
-              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v1
               with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
-                  asset_name: ${{ inputs.output-name }}-${{ inputs.branch }}.zip
-                  asset_content_type: application/zip
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  # name of result zip
+                  files: ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
+                  tag_name: ${{ steps.package-version.outputs.current-version }}-${{ inputs.branch }}
 
             - name: cleanup zip file
               run: rm -f ./${{ inputs.output-name }}-${{ inputs.branch }}.zip
 
             - name: create commit
-              # more specific than v4
-              uses: stefanzweifel/git-auto-commit-action@abd87b7d94702070bef78dc1d56b6928b8fa9ecc
+              uses: stefanzweifel/git-auto-commit-action@v4.16.0
               with:
-                  commit_message: ${{steps.package-version.outputs.version}}
+                  commit_message: ${{ steps.package-version.outputs.current-version }}
                   branch: ${{ inputs.branch }}
